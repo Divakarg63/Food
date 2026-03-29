@@ -1,48 +1,51 @@
 pipeline {
-agent any
+    agent any
 
-environment {
-    DOCKER_IMAGE = "divakar2141/bike_rentals_project_img"
-}
-
-stages {
-
-    stage('GIT CHECKOUT') {
-        steps {
-            git branch: 'master',
-            credentialsId: 'Divaa',
-            url: 'https://github.com/Divakarg63/bike-rentals.git'
-        }
-    }
-    stage('Docker Build') {
-        steps {
-            sh 'docker build -t $DOCKER_IMAGE:latest .'
-        }
+    environment {
+        DOCKER_IMAGE = "divakar2141/Food_project_img"
+        TAG = "latest"
     }
 
-    stage('Docker Login') {
-        steps {
-            withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                sh 'echo $PASS | docker login -u $USER --password-stdin'
+    stages {
+
+        stage('Clone Repo') {
+            steps {
+                git 'https://github.com/Divakarg63/Food.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $DOCKER_IMAGE:$TAG .'
+            }
+        }
+
+        stage('Login to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-cred',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                }
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                sh 'docker push $DOCKER_IMAGE:$TAG'
+            }
+        }
+
+        stage('Deploy Container') {
+            steps {
+                sh '''
+                docker stop myapp || true
+                docker rm myapp || true
+                docker run -d -p 2112:3000 --name myapp $DOCKER_IMAGE:$TAG
+                '''
             }
         }
     }
-
-    stage('Push Image') {
-        steps {
-            sh 'docker push $DOCKER_IMAGE:latest'
-        }
-    }
-
-    stage('Deploy Container') {
-        steps {
-            sh '''
-            docker rm -f bike_rentals_project_cont || true
-            docker run -d -p 2112:8080 --name bike_rentals_project_cont $DOCKER_IMAGE:latest
-            '''
-        }
-    }
-
-}
-
 }
