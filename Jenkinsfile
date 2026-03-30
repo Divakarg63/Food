@@ -10,7 +10,7 @@ pipeline {
 
         stage('Clone Repo') {
             steps {
-                git 'https://github.com/Divakarg63/Food.git'
+                git branch: 'main', url: 'https://github.com/Divakarg63/Food.git'
             }
         }
 
