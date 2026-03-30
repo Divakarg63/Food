@@ -1,20 +1,23 @@
 # Use lightweight Node image
 FROM node:18-alpine
 
-# Create app directory
+# Set working directory
 WORKDIR /app
 
-# Copy only package files first (better caching)
+# Copy dependency files first
 COPY package*.json ./
 
-# Install dependencies (clean + faster)
-RUN npm install --omit=dev
+# Install dependencies
+RUN npm install
 
-# Copy rest of the code
+# Copy all project files
 COPY . .
 
-# Expose port (your app uses 3000)
+# Build step (if React or frontend build exists)
+RUN npm run build || true
+
+# Expose port (your Jenkins uses 3000)
 EXPOSE 3000
 
-# Start app
+# Start the app
 CMD ["npm", "start"]
