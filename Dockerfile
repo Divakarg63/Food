@@ -1,4 +1,4 @@
-# Use lightweight Node image
+# Use Node.js (lightweight)
 FROM node:18-alpine
 
 # Set working directory
@@ -10,14 +10,14 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
-# Copy all project files
+# Copy full project
 COPY . .
 
-# Build step (if React or frontend build exists)
+# Build step (important for React/Vite apps)
 RUN npm run build || true
 
-# Expose port (your Jenkins uses 3000)
+# Expose port (your app uses 3000)
 EXPOSE 3000
 
-# Start the app
+# Start app
 CMD ["npm", "start"]
