@@ -14,7 +14,7 @@ RUN npm install
 RUN npm run build
 
 
-# ---------- Production Stage ----------
+# ---------- Production Stage ---------
 FROM nginx:alpine
 
 # build files copy
