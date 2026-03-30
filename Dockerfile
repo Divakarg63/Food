@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # 👇 Move into correct folder (adjust if needed)
-WORKDIR /app/frontend
+WORKDIR ./app/frontend
 
 # Install dependencies
 RUN npm install
