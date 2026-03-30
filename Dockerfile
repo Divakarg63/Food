@@ -1,20 +1,20 @@
-# Use official Node.js image
-FROM node:18
+# Use lightweight Node image
+FROM node:18-alpine
 
 # Create app directory
 WORKDIR /app
 
-# Copy package files first (for caching)
+# Copy only package files first (better caching)
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies (clean + faster)
+RUN npm install --omit=dev
 
-# Copy rest of the app
+# Copy rest of the code
 COPY . .
 
-# Expose app port
+# Expose port (your app uses 3000)
 EXPOSE 3000
 
-# Start the app
+# Start app
 CMD ["npm", "start"]
