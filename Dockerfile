@@ -1,27 +1,23 @@
 # ---------- Build Stage ----------
 FROM node:18-alpine AS build
 
-# Set working directory
 WORKDIR /app
 
-# Copy frontend folder
-COPY frontend/ ./frontend
-
-# Move into frontend
-WORKDIR /app/frontend
+# Copy all files
+COPY . .
 
 # Install dependencies
 RUN npm install
 
-# Build the app
+# Build app
 RUN npm run build
 
 
 # ---------- Production Stage ----------
 FROM nginx:alpine
 
-# Copy built files to nginx
-COPY --from=build /app/frontend/build /usr/share/nginx/html
+# Copy build output (React)
+COPY --from=build /app/build /usr/share/nginx/html
 
 # Expose nginx port
 EXPOSE 80
