@@ -1,28 +1,30 @@
 # ---------- Build Stage ----------
 FROM node:18-alpine AS build
 
-# 👇 CHANGE THIS (important)
+# Set working directory
 WORKDIR /app
 
-# Copy entire repo first
-COPY . .
+# Copy frontend folder
+COPY frontend/ ./frontend
 
-# 👇 Move into correct folder (adjust if needed)
-WORKDIR ./app/frontend
+# Move into frontend
+WORKDIR /app/frontend
 
 # Install dependencies
 RUN npm install
 
-# Build app
+# Build the app
 RUN npm run build
 
 
 # ---------- Production Stage ----------
 FROM nginx:alpine
 
-# 👇 If React (build folder)
+# Copy built files to nginx
 COPY --from=build /app/frontend/build /usr/share/nginx/html
 
+# Expose nginx port
 EXPOSE 80
 
+# Start nginx
 CMD ["nginx", "-g", "daemon off;"]
