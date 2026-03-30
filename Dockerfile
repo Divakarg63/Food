@@ -17,11 +17,11 @@ RUN npm run build
 # ---------- Production Stage ----------
 FROM nginx:alpine
 
-# Copy build output to nginx
+# Copy build output (change to dist if needed)
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Expose port
-EXPOSE 3000
+# Nginx runs on port 80
+EXPOSE 80
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
