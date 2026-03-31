@@ -43,7 +43,7 @@ pipeline {
                 sh '''
                 docker stop myapp || true
                 docker rm myapp || true
-                docker run -d -p 3001:80 --name myapp $DOCKER_IMAGE:$TAG
+                docker run -d -p 3002:80 --name myapp $DOCKER_IMAGE:$TAG
                 '''
             }
         }
